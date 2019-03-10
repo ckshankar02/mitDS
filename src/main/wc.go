@@ -33,15 +33,6 @@ func mapF(filename string, contents string) []mapreduce.KeyValue {
 		} else {
 			splitHash[str] = 1
 		}
-
-		/*val, found := splitKV[str]
-		if found == true {
-			count, _ := strconv.Atoi(val)
-			count++
-			splitKV[str] = strconv.Itoa(count)
-		} else {
-			splitKV[str] = "1"
-		}*/
 	}
 
 	for k, v := range splitHash {
