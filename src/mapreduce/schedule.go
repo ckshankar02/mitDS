@@ -5,6 +5,7 @@ import (
 	"sync"
 )
 
+
 //
 // schedule() starts and waits for all tasks in the given phase (mapPhase
 // or reducePhase). the mapFiles argument holds the names of the files that
@@ -36,24 +37,27 @@ func schedule(jobName string, mapFiles []string, nReduce int, phase jobPhase, re
 	//
 	// Your code here (Part III, Part IV).
 	//
-
+	doStr := "Worker.DoTask"
 	for i := 0; i < ntasks; i++ {
 		var args DoTaskArgs
-		w := <-registerChan
-		doStr := "Worker.DoTask"
 		args.JobName = jobName
+		args.Phase = phase
+		args.TaskNumber = i
+		args.NumOtherPhase = nOther
 		if phase == mapPhase {
 			args.File = mapFiles[i]
 		} else {
 			args.File = ""
 		}
-		args.Phase = phase
-		args.TaskNumber = i
-		args.NumOtherPhase = nOther
 
 		wg.Add(1)
 		go func() {
+			w := <-registerChan
 			call(w, doStr, args, nil)
+			select {
+			case registerChan <- w:
+			default:
+			}
 			wg.Done()
 		}()
 	}
