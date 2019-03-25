@@ -20,12 +20,9 @@ func (mr *Master) Shutdown(_, _ *struct{}) error {
 // calls (Register in particular) for as long as the worker is alive.
 func (mr *Master) startRPCServer() {
 	rpcs := rpc.NewServer()
-	fmt.Println("SCANJEE: RPC created")
 	rpcs.Register(mr)
-	fmt.Println("SCANJEE: RPC registered")
 	os.Remove(mr.address)                  // only needed for "unix"
 	l, e := net.Listen("unix", mr.address) //*IPConn, err
-	fmt.Println("SCANJEE: RPC listen returned")
 	if e != nil {
 		log.Fatal("RegstrationServer", mr.address, " error: ", e)
 	}
