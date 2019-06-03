@@ -62,5 +62,6 @@ func schedule(jobName string, mapFiles []string, nReduce int, phase jobPhase, re
 		}()
 	}
 	wg.Wait()
+	close(registerChan)
 	fmt.Printf("Schedule: %v done\n", phase)
 }
