@@ -52,16 +52,18 @@ func schedule(jobName string, mapFiles []string, nReduce int, phase jobPhase, re
 
 		wg.Add(1)
 		go func() {
-			w := <-registerChan
-			call(w, doStr, args, nil)
-			select {
-			case registerChan <- w:
-			default:
+			res := false;
+			for res == false {
+				w := <-registerChan
+				res = call(w, doStr, args, nil)
+				select {
+				case registerChan <- w:
+				default:
+				}
 			}
 			wg.Done()
 		}()
 	}
 	wg.Wait()
-	close(registerChan)
 	fmt.Printf("Schedule: %v done\n", phase)
 }
